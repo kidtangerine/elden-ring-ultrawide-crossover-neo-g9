@@ -89,7 +89,11 @@ temporary executable ready: offset=0x19ED05E, screen 3840x1080: offset=0x19ED05E
 
 ## Known limitations
 
-- **Loading screens** are 16:9; the strips beside them show the low-detail world loading in behind. Gameplay is unaffected.
+- **Loading screens show junk at the sides.** Loading screens, including the ones when the game
+  starts and when you quit, draw their artwork at 16:9 and never clear the rest of the screen, so the
+  side strips show a half-loaded, low-detail world (bare cliffs, flat water). It's annoying, but
+  harmless: it disappears as soon as the area loads, and gameplay and cutscenes are full width.
+  No patch for this exists yet; contributions welcome.
 - **Performance:** 3840×1080 is twice the pixels of 1080p. On an M5 Max it held 60 FPS
   (GPU ~7 ms/frame) at High; slower Macs may need lower settings.
 - **Game updates** move the patch locations. On an unknown executable the launcher
