@@ -54,6 +54,7 @@ fi
 cp "$ROOT/resources/uninstall.reg" "$TOOLS/uninstall.reg"
 "$WINE" --bottle "$BOTTLE_NAME" regedit /S 'C:\EldenRingTools\uninstall.reg'
 rm -f "$TOOLS/EldenRingUltrawideLauncher.exe" "$TOOLS/install.reg" "$TOOLS/uninstall.reg" \
-    "$TOOLS/launch-elden-ring-ultrawide.command" "$TOOLS/elden-ring-ultrawide.log" "$TOOLS/latest-backup.txt"
+    "$TOOLS/launch-elden-ring-ultrawide.command" "$TOOLS/elden-ring-ultrawide.log" "$TOOLS/latest-backup.txt" \
+    "$TOOLS/resolution.txt" "$BOTTLE_PATH/$GAME_RELATIVE/steam_appid.txt"
 
 printf 'Uninstalled. Original URL/menu files were restored from: %s\n' "$backup"

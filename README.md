@@ -1,130 +1,76 @@
-<p align="center">
-  <img src="docs/images/social-preview.png" width="100%" alt="Elden Ring ultrawide fix for CrossOver on macOS — native 21:9 on Apple silicon">
-</p>
-
-<h1 align="center">Elden Ring CrossOver Ultrawide</h1>
+<h1 align="center">Elden Ring Ultrawide / Widescreen Fix for Samsung Odyssey Neo G9 on Mac (CrossOver)</h1>
 
 <p align="center">
-  <strong>Remove Elden Ring's 16:9 black bars on an ultrawide Mac—then launch normally from CrossOver.</strong>
+  <strong>True edge-to-edge 32:9 Elden Ring on a Samsung Odyssey Neo G9 (Neo9 / G95NC / G95SC) — or any super-ultrawide or 21:9 widescreen monitor — through CrossOver on macOS and Apple silicon.</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/IgnazioDS/elden-ring-crossover-ultrawide/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/IgnazioDS/elden-ring-crossover-ultrawide?style=flat-square&color=c9a45c"></a>
-  <a href="https://github.com/IgnazioDS/elden-ring-crossover-ultrawide/actions/workflows/build.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/IgnazioDS/elden-ring-crossover-ultrawide/build.yml?branch=main&style=flat-square"></a>
-  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/github/license/IgnazioDS/elden-ring-crossover-ultrawide?style=flat-square"></a>
-  <a href="https://github.com/IgnazioDS/elden-ring-crossover-ultrawide/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/IgnazioDS/elden-ring-crossover-ultrawide?style=flat-square"></a>
-  <a href="https://github.com/sponsors/IgnazioDS"><img alt="Sponsor this project" src="https://img.shields.io/badge/Sponsor-%E2%99%A5-ea4aaa?style=flat-square&logo=githubsponsors"></a>
+  <img src="docs/images/after-neo-g9-32x9.jpg" width="100%" alt="Elden Ring edge to edge at 3840x1080 (32:9) on a Samsung Odyssey Neo G9 through CrossOver">
 </p>
 
-This open-source Elden Ring ultrawide fix targets the Windows Steam version
-running through [CrossOver](https://www.codeweavers.com/crossover) on macOS.
-It removes the 16:9 pillarboxing at 21:9 resolutions such as **3440×1440**
-without keeping Flawless Widescreen or another companion application running.
+No black bars, no dark edges, no slow-motion NPCs at the sides, and no Flawless Widescreen.
+Made for 57" (7680×2160) and 49" (5120×1440) Neo G9 / Odyssey G9 monitors and other 32:9 or
+21:9 ultrawides on Apple silicon Macs with CrossOver 26 (D3DMetal / Game Porting Toolkit).
+Tested on a 57" Neo G9 with an M5 Max — reports from other setups are welcome.
 
-The banner uses the Elden Ring image supplied by the repository owner. It is
-not AI-generated; only crop, tonal adjustment and typography were applied.
+Based on [IgnazioDS/elden-ring-crossover-ultrawide](https://github.com/IgnazioDS/elden-ring-crossover-ultrawide),
+which removes Elden Ring's 16:9 black bars at 21:9. On a 32:9 super-ultrawide that
+alone is not enough — the bars stay, or the image only partly widens with dark sides.
+This edition adds the missing pieces, found while getting it working on a
+57" Odyssey Neo G9 (G95NC) with an M5 Max MacBook Pro.
 
-The installed Steam executable is never modified. The launcher validates a
-known-safe signature, patches a temporary copy, starts the game, and removes
-that copy when you quit.
+> [!NOTE]
+> The launcher starts the game directly rather than through the Easy Anti-Cheat
+> launcher, which doesn't run under CrossOver anyway. Steam's **Play** button is untouched.
 
-> [!WARNING]
-> **Offline only.** This route bypasses Easy Anti-Cheat, so Elden Ring online
-> multiplayer is unavailable. Never use the temporary executable with EAC or
-> attempt online play.
+## What this edition fixes
 
-## Before and after
+| Problem on 32:9 | Cause | Fix in this edition |
+|---|---|---|
+| Menu shows 3840×1080 but the game still renders 16:9 with bars | Elden Ring only renders resolutions from a built-in 16:9 table; anything else silently falls back to 1920×1080 | The 1920×1080 table entry is rewritten to your resolution in the temporary copy |
+| Sides look dark, like leftover bars | The vignette overlay is sized for 16:9 and darkens the outer thirds of a 32:9 image | Vignette disabled |
+| NPCs at the sides move in slow motion | Anything outside the 16:9 view gets low-rate animation updates | Full-rate animation everywhere |
+| Patched game closes after one second, or the stock game starts instead | Started outside Steam, the game asks Steam to relaunch it — through the anti-cheat launcher | Launcher creates `steam_appid.txt` |
+| Game exits immediately from the CrossOver icon | Steam was not running in the bottle | Launcher starts Steam if needed and retries while it signs in |
+| Different screens, or a laptop on its own | Resolution was hard-coded | Screen size is detected at each launch; on a 16:9/16:10 screen the game runs unpatched |
 
-| Vanilla 16:9 pillarboxing on a 21:9 display | Native 3440×1440 ultrawide |
-|:--:|:--:|
-| ![Elden Ring with black bars on a 3440x1440 display](docs/images/before-16x9-bars.jpg) | ![Elden Ring rendering edge-to-edge at 3440x1440 through CrossOver](docs/images/after-native-21x9.jpg) |
+As in the original, the installed `eldenring.exe` is never modified. Each launch
+validates the clean executable, patches a temporary copy, runs it, and deletes it on exit.
 
-Both images are real CrossOver captures from the tested setup—no mockups.
-
-## Why this fix is different
-
-| Capability | This launcher |
-|---|---|
-| Normal CrossOver game icon | ✅ One click after installation |
-| Companion app running in the background | ✅ None |
-| Installed `eldenring.exe` modified | ✅ Never |
-| Unknown game build handling | ✅ Fails closed before patching |
-| Temporary-file cleanup | ✅ Automatic on exit |
-| Steam Cloud, playtime and achievements | ✅ Preserved |
-| Rollback | ✅ Original URL/menu records backed up |
-| Online multiplayer | ❌ EAC is bypassed; offline only |
-
-## 30-second install
+## Install
 
 ### Requirements
 
-- A legitimate Steam copy of Elden Ring installed inside a CrossOver bottle
+- A legitimate Steam copy of Elden Ring inside a CrossOver bottle
 - Elden Ring **1.17.1** with a clean Steam executable
-- CrossOver 26.x on macOS; tested on Apple silicon
+- CrossOver 26.x on Apple silicon
 - The game fully closed during installation
 
 ### Terminal
 
 ```sh
-git clone https://github.com/IgnazioDS/elden-ring-crossover-ultrawide.git
-cd elden-ring-crossover-ultrawide
-chmod +x scripts/*.command scripts/*.sh
+git clone https://github.com/kidtangerine/elden-ring-ultrawide-crossover-neo-g9.git
+cd elden-ring-ultrawide-crossover-neo-g9
 ./scripts/install.command
 ```
 
-The installer discovers standard CrossOver bottles—including bottles on an
-external volume—verifies checksums, creates a rollback backup, and rewires the
-existing Elden Ring shortcut. Set your native ultrawide resolution in-game,
-then launch from the **normal CrossOver Elden Ring icon**.
+The resolution is detected each time you launch: the screen size CrossOver reports
+(the "looks like" size in System Settings → Displays, with CrossOver's High
+Resolution Mode off) — e.g. `3840x1080` on a 57" Neo G9 at default scaling,
+`5120x1440` on a 49" G9, `3440x1440` at 21:9. To force a size, install with
+`--resolution 3840x1080` (or edit `C:\EldenRingTools\resolution.txt` in the bottle).
 
-For a custom or ambiguous installation:
+On a screen that is not wider than 16:9 — for example a MacBook with the external
+monitor unplugged — the launcher runs the game unpatched, so the same icon works everywhere.
 
-```sh
-./scripts/install.command --bottle "/full/path/to/Elden Ring bottle"
-```
+If more than one bottle contains Elden Ring, add `--bottle "/full/path/to/bottle"`.
 
-No Python runtime, ModEngine, Flawless Widescreen, or special launch order is
-required.
+### Play
 
-## Supported build
-
-| Component | Verified value |
-|---|---|
-| Elden Ring | Steam build 1.17.1 |
-| Clean `eldenring.exe` SHA-256 | `1a3547101327f65d0c76da2f9190ac0aa66871ea42bae2aecc61e11a8b597891` |
-| CrossOver | 26.3 |
-| macOS hardware | Apple silicon, tested on M2 Pro |
-| Display | 3440×1440 at 21:9 |
-
-An unknown or modified executable is rejected without being changed. Game
-updates can move the patch location, so a future build may require a new
-reviewed compatibility profile.
-
-## How the safe launch works
-
-```text
-Normal CrossOver icon
-        ↓
-Private bottle-local URL protocol
-        ↓
-Validate clean 1.17.1 byte signature
-        ↓
-Copy → patch one branch byte → launch temporary executable
-        ↓
-Wait for exit → delete temporary and staging files
-```
-
-The launcher validates six bytes at offset `0x19ED05E`, copies the clean game,
-and changes only the branch byte from `74` to `EB` in the temporary copy. A
-named Windows mutex prevents concurrent patch sessions. Failures are logged
-and leave the installed Steam file untouched.
-
-## Steam saves, Cloud and achievements
-
-The game remains associated with Steam AppID `1245620`, so local saves, Steam
-Cloud, playtime, overlay and achievements continue to operate. Steam must be
-running and signed in inside the bottle. The launcher never reads credentials
-or touches save files.
+1. Click the **ELDEN RING** icon in CrossOver (Steam starts automatically if it isn't running).
+2. In-game: **System → Graphics → Screen Resolution** → choose your ultrawide resolution
+   (once). It replaces the 1920×1080 slot in the list, so the same saved setting gives
+   ultrawide on the wide screen and normal 1920×1080 on a laptop screen. Screen mode **Borderless** is recommended.
 
 ## Diagnose or uninstall
 
@@ -133,95 +79,66 @@ or touches save files.
 ./scripts/uninstall.command
 ```
 
-Both commands accept the optional `--bottle` argument. Uninstall restores the
-original records from `drive_c/EldenRingTools/backups` and removes the private
-URL protocol. The launcher log is located at:
+Uninstall restores the original shortcuts and removes the launcher, `resolution.txt`
+and `steam_appid.txt`. The launcher log is `C:\EldenRingTools\elden-ring-ultrawide.log`
+inside the bottle; a healthy launch looks like:
 
 ```text
-C:\EldenRingTools\elden-ring-ultrawide.log
+temporary executable ready: offset=0x19ED05E, screen 3840x1080: offset=0x19ED05E, 1920x1080 entry -> 3840x1080, vignette off, full-rate animation
 ```
 
-## Frequently asked questions
+## Known limitations
 
-<details>
-<summary><strong>Does this fix Elden Ring black bars at 3440×1440?</strong></summary>
+- **Loading screens** are 16:9; the strips beside them show the low-detail world loading in behind. Gameplay is unaffected.
+- **Performance:** 3840×1080 is twice the pixels of 1080p. On an M5 Max it held 60 FPS
+  (GPU ~7 ms/frame) at High; slower Macs may need lower settings.
+- **Game updates** move the patch locations. On an unknown executable the launcher
+  refuses to patch and logs why.
 
-Yes. Native 3440×1440 edge-to-edge gameplay was cold-launch tested from the
-normal CrossOver icon. Other 21:9 resolutions should benefit from the same
-black-bar branch patch, but only the configuration above is currently verified.
-</details>
+## Supported build
 
-<details>
-<summary><strong>Must Flawless Widescreen stay open?</strong></summary>
+| Component | Verified value |
+|---|---|
+| Elden Ring | Steam build 1.17.1 |
+| Clean `eldenring.exe` SHA-256 | `1a3547101327f65d0c76da2f9190ac0aa66871ea42bae2aecc61e11a8b597891` |
+| CrossOver | 26.3 |
+| Mac | MacBook Pro 16" M5 Max |
+| Display | Samsung Odyssey Neo G9 57" (G95NC), 3840×1080 @ 32:9 |
 
-No. Flawless Widescreen is not installed or launched by this project. The
-bottle-local helper exits after Elden Ring closes.
-</details>
-
-<details>
-<summary><strong>Can I play Elden Ring online with this?</strong></summary>
-
-No. The workaround launches without Easy Anti-Cheat and is strictly for
-offline play. Use an unmodified EAC launch path for online multiplayer.
-</details>
-
-<details>
-<summary><strong>Will a Steam update break my installed game?</strong></summary>
-
-No installed game file is patched. If the expected signature changes, the
-launcher stops and logs an error. Open a compatibility report with the new
-clean executable hash—never upload the executable.
-</details>
-
-<details>
-<summary><strong>Does it work on M1, M3, M4 or Intel Macs?</strong></summary>
-
-The design is architecture-independent, but the current verified machine is an
-M2 Pro Mac. Reports from other Macs and CrossOver versions are welcome.
-</details>
-
-## Build and verify
-
-The dependency-free launcher source is in
-[`src/EldenRingUltrawideLauncher.cs`](src/EldenRingUltrawideLauncher.cs).
-GitHub Actions builds it on Windows and ShellChecks every installer script.
-The tested 8.7 KB binary in `dist/` has SHA-256:
+## How the launch works
 
 ```text
-1506f0c7d661915bf859b1694364d56c825775d7c229f8b6b982f38cc3527543
+CrossOver ELDEN RING icon
+        ↓
+Launcher (C:\EldenRingTools) — validates the clean 1.17.1 executable
+        ↓
+Temporary copy: bar-removal branch (0x19ED05E 74→EB)
+                1920×1080 table entry → your resolution
+                vignette multiply → zero (0x1B8DE7C)
+                animation-distance divide → zero (0xB12677)
+        ↓
+steam_appid.txt present, Steam running → start the copy
+        ↓
+Game exits → temporary files deleted
 ```
 
-## Help the project grow
+## Build
 
-- ⭐ **Star the repository** if it solved your ultrawide problem; stars help
-  other Mac players find a tested solution.
-- Share a verified configuration in
-  [Discussions](https://github.com/IgnazioDS/elden-ring-crossover-ultrawide/discussions).
-- Report new game builds through the
-  [compatibility form](https://github.com/IgnazioDS/elden-ring-crossover-ultrawide/issues/new?template=bug_report.yml).
-- See [CONTRIBUTING.md](CONTRIBUTING.md) for safe patch-profile requirements.
-- Use the ready-made, factual copy in [docs/SHARING.md](docs/SHARING.md) when
-  sharing with a community whose rules permit it.
+The launcher source is [`src/EldenRingUltrawideLauncher.cs`](src/EldenRingUltrawideLauncher.cs)
+(.NET Framework 4.8). Build with `dotnet build src/EldenRingUltrawideLauncher.csproj -c Release`.
+The bundled `dist/EldenRingUltrawideLauncher.exe` checksum is in
+[`dist/SHA256SUMS.txt`](dist/SHA256SUMS.txt) and is verified by the installer.
 
-## Support maintenance
+## Credits
 
-This project is free and open source. If it saved you time and you would like
-to help fund compatibility testing, game-update maintenance and clearer setup
-guides, you can [sponsor the project on GitHub](https://github.com/sponsors/IgnazioDS).
+- [IgnazioDS/elden-ring-crossover-ultrawide](https://github.com/IgnazioDS/elden-ring-crossover-ultrawide) —
+  the CrossOver launcher, installer, temporary-copy design and rollback tooling this edition is built on (MIT).
+- [gurrgur/er-patcher](https://github.com/gurrgur/er-patcher) — black-bar, vignette and animation-distance patches (MIT).
+- [uberhalit/EldenRingFpsUnlockAndMore](https://github.com/uberhalit/EldenRingFpsUnlockAndMore) —
+  the custom-resolution table technique (MIT).
 
-Sponsorship is optional and does not affect access to releases, support or
-project features.
-
-## Privacy, copyright and trademarks
-
-No FromSoftware/Bandai Namco binaries or extracted assets, credentials, saves,
-or CrossOver bottle data are distributed. Users must own Elden Ring and
-provide their own legitimate Steam installation. The two user-captured
-gameplay screenshots above are included solely to demonstrate compatibility
-and aspect-ratio behavior.
-
-Elden Ring is a trademark of its respective owners. CrossOver is a trademark
-of CodeWeavers. This independent community project is not affiliated with or
-endorsed by FromSoftware, Bandai Namco, Valve, or CodeWeavers.
+Elden Ring is a trademark of its respective owners. CrossOver is a trademark of
+CodeWeavers. This independent community project is not affiliated with or endorsed
+by FromSoftware, Bandai Namco, Valve, CodeWeavers or Samsung. No game files are distributed.
 
 Released under the [MIT License](LICENSE).

@@ -33,6 +33,17 @@ do
     fi
 done
 
+if [ -f "$TOOLS/resolution.txt" ]; then
+    printf 'Resolution: %s\n' "$(cat "$TOOLS/resolution.txt")"
+else
+    printf 'Resolution: auto (screen size)\n'
+fi
+if [ -f "$GAME/steam_appid.txt" ]; then
+    printf 'OK: steam_appid.txt present\n'
+else
+    printf 'PENDING: steam_appid.txt (the launcher creates it on first run)\n'
+fi
+
 if [ -f "$GAME/eldenring_ultrawide_tmp.exe" ]; then
     printf 'RUNNING/STALE: temporary executable exists.\n'
 else

@@ -14,8 +14,7 @@ documentation improvements from players of every experience level.
 ## Unacceptable behavior
 
 Harassment, discrimination, threats, doxxing, sexualized conduct, deliberate
-misinformation, piracy requests, cheating guidance, or attempts to bypass the
-project's offline-only safety boundary are not welcome.
+misinformation, piracy requests, or cheating guidance are not welcome.
 
 Maintainers may edit or remove content and restrict participation when needed
 to protect the community. Report sensitive conduct concerns privately to the

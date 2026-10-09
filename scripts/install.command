@@ -8,16 +8,22 @@ SCRIPT_DIRECTORY=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)
 
 usage()
 {
-    printf 'Usage: %s [--bottle "/full/path/to/Elden Ring bottle"]\n' "$0"
+    printf 'Usage: %s [--bottle "/full/path/to/Elden Ring bottle"] [--resolution auto|WIDTHxHEIGHT]\n' "$0"
 }
 
 BOTTLE_PATH=''
+RESOLUTION='auto'
 while [ "$#" -gt 0 ]
 do
     case "$1" in
         --bottle)
             [ "$#" -ge 2 ] || fail '--bottle requires a path.'
             BOTTLE_PATH=$2
+            shift 2
+            ;;
+        --resolution)
+            [ "$#" -ge 2 ] || fail '--resolution requires WIDTHxHEIGHT, e.g. 5120x1440.'
+            RESOLUTION=$2
             shift 2
             ;;
         -h|--help)
@@ -30,6 +36,17 @@ do
             ;;
     esac
 done
+
+case "$RESOLUTION" in
+    auto) ;;
+    [1-9][0-9][0-9]*x[1-9][0-9][0-9]*) ;;
+    *) fail "Invalid --resolution '$RESOLUTION'; expected WIDTHxHEIGHT, e.g. 5120x1440." ;;
+esac
+if [ "$RESOLUTION" != auto ]; then
+    case "${RESOLUTION%%x*}:${RESOLUTION#*x}" in
+        *[!0-9:]*) fail "Invalid --resolution '$RESOLUTION'." ;;
+    esac
+fi
 
 ROOT=$(project_root)
 BOTTLE_PATH=$(resolve_bottle)
@@ -48,7 +65,7 @@ require_supported_game "$BOTTLE_PATH"
 ensure_game_closed "$BOTTLE_PATH"
 
 launcher_hash=$(shasum -a 256 "$ROOT/dist/EldenRingUltrawideLauncher.exe" | awk '{print $1}')
-expected_launcher_hash='1506f0c7d661915bf859b1694364d56c825775d7c229f8b6b982f38cc3527543'
+expected_launcher_hash='ff6dd583529a0dda082ab685c10a8a9acc812068efdfff187d79463117ce4c43'
 [ "$launcher_hash" = "$expected_launcher_hash" ] || fail 'Bundled launcher checksum mismatch; obtain a clean repository copy.'
 
 timestamp=$(date '+%Y%m%d-%H%M%S')
@@ -72,6 +89,7 @@ fi
 
 cp "$ROOT/dist/EldenRingUltrawideLauncher.exe" "$TOOLS/EldenRingUltrawideLauncher.exe"
 cp "$ROOT/resources/install.reg" "$TOOLS/install.reg"
+printf '%s' "$RESOLUTION" > "$TOOLS/resolution.txt"
 cp "$ROOT/resources/ELDEN RING.url" "$WINDOWS_START_MENU"
 cp "$ROOT/resources/ELDEN RING.url" "$WINDOWS_DESKTOP"
 
@@ -94,4 +112,5 @@ printf '%s\n' "$backup" > "$TOOLS/latest-backup.txt"
 printf '\nInstalled successfully.\n'
 printf 'Bottle: %s\n' "$BOTTLE_PATH"
 printf 'Backup: %s\n' "$backup"
-printf 'Launch from the normal CrossOver Elden Ring icon. This fix is offline-only because EAC is bypassed.\n'
+printf 'Resolution: %s (on screens wider than 16:9; pick it in-game under System > Graphics)\n' "$RESOLUTION"
+printf 'Launch from the normal CrossOver Elden Ring icon. Steam starts automatically if needed.\n'
