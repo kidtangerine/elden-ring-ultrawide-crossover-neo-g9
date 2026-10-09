@@ -94,6 +94,9 @@ temporary executable ready: offset=0x19ED05E, screen 3840x1080: offset=0x19ED05E
   side strips show a half-loaded, low-detail world (bare cliffs, flat water). It's annoying, but
   harmless: it disappears as soon as the area loads, and gameplay and cutscenes are full width.
   No patch for this exists yet; contributions welcome.
+- **Map and site-of-grace fade are 16:9.** The map is a 16:9 panel with your live game visible
+  on both sides, and the fade when resting or traveling only darkens the 16:9 centre. Cosmetic;
+  tracked with the loading screens in [#1](https://github.com/kidtangerine/elden-ring-ultrawide-crossover-neo-g9/issues/1).
 - **Performance:** 3840×1080 is twice the pixels of 1080p. On an M5 Max it held 60 FPS
   (GPU ~7 ms/frame) at High; slower Macs may need lower settings.
 - **Game updates** move the patch locations. On an unknown executable the launcher
