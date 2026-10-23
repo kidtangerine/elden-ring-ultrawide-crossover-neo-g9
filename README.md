@@ -33,16 +33,17 @@ This edition adds the missing pieces, found while getting it working on a
 | Patched game closes after one second, or the stock game starts instead | Started outside Steam, the game asks Steam to relaunch it — through the anti-cheat launcher | Launcher creates `steam_appid.txt` |
 | Game exits immediately from the CrossOver icon | Steam was not running in the bottle | Launcher starts Steam if needed and retries while it signs in |
 | Different screens, or a laptop on its own | Resolution was hard-coded | Screen size is detected at each launch; on a 16:9/16:10 screen the game runs unpatched |
+| Icon stops working after a game update | Patch locations were hard-coded per game version | Patches are found by byte pattern at every launch; if one is ever missing the game starts unpatched (16:9) and the log says why |
 
 As in the original, the installed `eldenring.exe` is never modified. Each launch
-validates the clean executable, patches a temporary copy, runs it, and deletes it on exit.
+patches a temporary copy, runs it, and deletes it on exit.
 
 ## Install
 
 ### Requirements
 
 - A legitimate Steam copy of Elden Ring inside a CrossOver bottle
-- Elden Ring **1.17.1** with a clean Steam executable
+- A clean Steam `eldenring.exe` (tested on 1.17.1 and the October 2026 update; the installer checks the patch can be found)
 - CrossOver 26.x on Apple silicon
 - The game fully closed during installation
 
@@ -84,7 +85,7 @@ and `steam_appid.txt`. The launcher log is `C:\EldenRingTools\elden-ring-ultrawi
 inside the bottle; a healthy launch looks like:
 
 ```text
-temporary executable ready: offset=0x19ED05E, screen 3840x1080: offset=0x19ED05E, 1920x1080 entry -> 3840x1080, vignette off, full-rate animation
+screen 3840x1080: bars at 0x19EE74E, 1920x1080 entry -> 3840x1080, vignette off, full-rate animation
 ```
 
 ## Known limitations
@@ -99,15 +100,14 @@ temporary executable ready: offset=0x19ED05E, screen 3840x1080: offset=0x19ED05E
   tracked with the loading screens in [#1](https://github.com/kidtangerine/elden-ring-ultrawide-crossover-neo-g9/issues/1).
 - **Performance:** 3840×1080 is twice the pixels of 1080p. On an M5 Max it held 60 FPS
   (GPU ~7 ms/frame) at High; slower Macs may need lower settings.
-- **Game updates** move the patch locations. On an unknown executable the launcher
-  refuses to patch and logs why.
+- **Game updates:** patches are located by pattern, so updates that only move code keep working.
+  If an update changes the patched code itself, the game starts unpatched (16:9) and the log says why.
 
 ## Supported build
 
 | Component | Verified value |
 |---|---|
-| Elden Ring | Steam build 1.17.1 |
-| Clean `eldenring.exe` SHA-256 | `1a3547101327f65d0c76da2f9190ac0aa66871ea42bae2aecc61e11a8b597891` |
+| Elden Ring | Steam 1.17.1 and the October 2026 update (build 25827938) |
 | CrossOver | 26.3 |
 | Mac | MacBook Pro 16" M5 Max |
 | Display | Samsung Odyssey Neo G9 57" (G95NC), 3840×1080 @ 32:9 |
@@ -117,12 +117,12 @@ temporary executable ready: offset=0x19ED05E, screen 3840x1080: offset=0x19ED05E
 ```text
 CrossOver ELDEN RING icon
         ↓
-Launcher (C:\EldenRingTools) — validates the clean 1.17.1 executable
+Launcher (C:\EldenRingTools) — finds each patch by byte pattern (must match exactly once)
         ↓
-Temporary copy: bar-removal branch (0x19ED05E 74→EB)
+Temporary copy: bar-removal branch (74 4F 45 8B 94 CC: 74→EB)
                 1920×1080 table entry → your resolution
-                vignette multiply → zero (0x1B8DE7C)
-                animation-distance divide → zero (0xB12677)
+                vignette multiply → zero
+                animation-distance divide → zero
         ↓
 steam_appid.txt present, Steam running → start the copy
         ↓

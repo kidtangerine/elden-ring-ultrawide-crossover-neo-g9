@@ -111,9 +111,10 @@ resolve_bottle()
 require_supported_game()
 {
     game_executable="$1/$GAME_RELATIVE/eldenring.exe"
-    actual_hash=$(shasum -a 256 "$game_executable" | awk '{print $1}')
-    supported_hash='1a3547101327f65d0c76da2f9190ac0aa66871ea42bae2aecc61e11a8b597891'
-    [ "$actual_hash" = "$supported_hash" ] || fail "Unsupported or modified eldenring.exe (SHA-256: $actual_hash). Steam-verify the game or wait for a patch-profile update."
+    # The launcher finds its patches by byte pattern, so any game version works as long as the
+    # black-bar pattern (74 4F 45 8B 94 CC) occurs exactly once.
+    matches=$(perl -0777 -ne 'my $n = () = /\x74\x4F\x45\x8B\x94\xCC/g; print $n' "$game_executable")
+    [ "$matches" = 1 ] || fail "The ultrawide patch was not found in this eldenring.exe (matches: $matches). Steam-verify the game files; if that does not help, this game version is not supported yet."
 }
 
 ensure_game_closed()

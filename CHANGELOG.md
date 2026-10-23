@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## 1.1.1 — 2026-10-22
+
+- Locate every patch by byte pattern at launch instead of fixed offsets, so game
+  updates that only move code keep working (fixes the October 2026 update, where the
+  icon stopped launching). If the bar pattern is missing, the game starts unpatched.
+- Installer no longer requires one exact game version; it checks the patch can be found.
+
 ## 1.1.0 — 2026-10-08 (Neo G9 / 32:9 edition)
 
 - Rewrite the 1920×1080 entry of the game's built-in resolution table to the
