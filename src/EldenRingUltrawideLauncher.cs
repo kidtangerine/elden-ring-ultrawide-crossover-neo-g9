@@ -45,6 +45,8 @@ internal static class EldenRingUltrawideLauncher
     // Entities outside the 16:9 view get low-rate animation updates, so NPCs at the sides of
     // a wider screen move in slow motion. Replace DIVSS XMM1,[R12+0x54] with XORPS XMM1,XMM1;
     // PXOR XMM1,XMM1 (gurrgur/er-patcher --increase-animation-distance).
+    // Create this (empty) file to skip the animation patch, e.g. to compare stutter with and without it.
+    private const string NoAnimationFixPath = @"C:\EldenRingTools\no-animation-fix";
     private const string AnimationPattern =
         "E8 ?? ?? ?? ?? 0F 28 ?? 0F 28 ?? E8 ?? ?? ?? ?? F3 0F ?? ?? 0F 28 ?? F3 41 0F 5E 4C 24 54";
     private const int AnimationOffset = 23;
@@ -114,8 +116,6 @@ internal static class EldenRingUltrawideLauncher
     private const string Me3Path = @"C:\EldenRingTools\me3\bin\me3.exe";
     private const string UiFixesPath = @"C:\EldenRingTools\ui-fixes";
     private const string TemporaryProcessName = "eldenring_ultrawide_tmp";
-    // Optional: rumble/er_rumble.dll forwards XInput vibration to the macOS er-rumble-helper.
-    private const string RumbleDllPath = @"C:\EldenRingTools\rumble\er_rumble.dll";
 
     private static bool UiFixesInstalled()
     {
@@ -128,8 +128,7 @@ internal static class EldenRingUltrawideLauncher
             ? new ProcessStartInfo
             {
                 FileName = Me3Path,
-                Arguments = "launch -g elden-ring --exe \"" + TemporaryPath + "\" --package \"" + UiFixesPath + "\""
-                    + (File.Exists(RumbleDllPath) ? " --native \"" + RumbleDllPath + "\"" : ""),
+                Arguments = "launch -g elden-ring --exe \"" + TemporaryPath + "\" --package \"" + UiFixesPath + "\"",
                 WorkingDirectory = Path.GetDirectoryName(Me3Path),
                 UseShellExecute = false,
                 CreateNoWindow = true,
@@ -269,7 +268,8 @@ internal static class EldenRingUltrawideLauncher
                     BitConverter.GetBytes(height).CopyTo(image, table + 4);
 
                     bool vignette = PatchPattern(image, VignettePattern, VignetteOffset, VignetteOriginal, VignettePatch, "vignette");
-                    bool animation = PatchPattern(image, AnimationPattern, AnimationOffset, AnimationOriginal, AnimationPatch, "animation distance");
+                    bool animation = !File.Exists(NoAnimationFixPath)
+                        && PatchPattern(image, AnimationPattern, AnimationOffset, AnimationOriginal, AnimationPatch, "animation distance");
                     Log("screen " + screenWidth + "x" + screenHeight + ": bars at 0x" + bars.ToString("X") + ", 1920x1080 entry -> " + width + "x" + height
                         + (vignette ? ", vignette off" : "") + (animation ? ", full-rate animation" : ""));
                 }
@@ -286,7 +286,7 @@ internal static class EldenRingUltrawideLauncher
                 EnsureSteam();
 
                 bool useMe3 = wide && UiFixesInstalled();
-                Log(useMe3 ? "launching through me3 with UI fixes from " + UiFixesPath + (File.Exists(RumbleDllPath) ? " and rumble forwarding" : "") : "launching directly");
+                Log(useMe3 ? "launching through me3 with UI fixes from " + UiFixesPath : "launching directly");
                 for (int attempt = 1; attempt <= MaxLaunchAttempts; attempt++)
                 {
                     var started = DateTime.Now;

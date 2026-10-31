@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.0 — 2026-10-30
+
+- Add `scripts/install-ui-fixes.command`: installs Dziggy's Ultrawide UI Fixes (from the user's own
+  Nexus download) loaded through me3 v0.13.0 (downloaded and checksum-verified), so loading screens,
+  the death transition, map, site-of-grace fade and menus fill the screen. Supports all of Dziggy's
+  ratios, the 16:9/21:9/32:9 HUD option and the world map border fix.
+- me3's file logging is kept at warnings so death and fast-travel loads aren't slowed down.
+- Optional switch to disable the full-rate animation patch (`C:\EldenRingTools\no-animation-fix`).
+- Uninstall also removes me3, the UI fixes and the animation switch.
+- README: 60 Hz tip for smooth frame pacing, first-launch-after-update note, Steam Cloud save note,
+  Full Screen mode limitation.
+
 ## 1.1.1 — 2026-10-22
 
 - Locate every patch by byte pattern at launch instead of fixed offsets, so game

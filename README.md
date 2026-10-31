@@ -73,6 +73,45 @@ If more than one bottle contains Elden Ring, add `--bottle "/full/path/to/bottle
    (once). It replaces the 1920×1080 slot in the list, so the same saved setting gives
    ultrawide on the wide screen and normal 1920×1080 on a laptop screen. Screen mode **Borderless** is recommended.
 
+### Optional: full-screen loading screens, map and menus
+
+Elden Ring draws its loading screens, death transition, world map, site-of-grace fade and
+menus at 16:9. With the black bars removed, the sides of those screens show whatever is behind
+them (half-loaded scenery, the live game). Dziggy's **Ultrawide UI Fixes** redraws them for
+wide screens; this edition loads it through [me3](https://github.com/garyttierney/me3), the
+current Mod Engine, with no extra app to run.
+
+1. Download from [Ultrawide UI Fixes → Files](https://www.nexusmods.com/eldenring/mods/283?tab=files)
+   (free Nexus account needed), all into one folder:
+   - the **main file for your screen**, e.g. **`04 - 32x9`** for a Neo G9 (32:9), or `01`–`03` for 21:9
+   - optional **Alternate HUD Ratios** — keeps the HUD in a normal 16:9 area instead of the far edges
+   - optional **World Map Border Loading Fix** — stops map tiles popping in at the screen edges
+2. Run (the game must be closed):
+
+   ```sh
+   ./scripts/install-ui-fixes.command ~/Downloads/your-folder
+   ```
+
+   Options: `--ratio 21.33x9|21.5x9|21.6x9|32x9|48x9` (default `32x9`),
+   `--hud 16x9|21x9|32x9|none` (default `16x9`). The installer only accepts menu layout files
+   from those zips, and downloads me3 v0.13.0 from GitHub, checking it against a pinned SHA-256.
+
+To switch the UI fixes off, rename `C:\EldenRingTools\ui-fixes` in the bottle to `ui-fixes.off`
+(the launcher then starts the game directly, as without them).
+
+### Tips
+
+- **Set the monitor to 60 Hz while playing.** Elden Ring is capped at 60 FPS; on a 120 Hz screen
+  each frame has to land on every second refresh, and a slightly late frame shows for three —
+  a visible hitch even though the FPS counter says 60. At 60 Hz frame pacing is noticeably smoother.
+- **Full-rate NPC animation** is on by default (NPCs at the screen edges move normally). To
+  compare without it, create an empty file `C:\EldenRingTools\no-animation-fix` in the bottle.
+- **The first launch after a game update is slow** (about 2 minutes with the UI fixes) while me3
+  rebuilds its startup cache, and new or updated areas stutter until their shaders are compiled.
+- **Saves:** the icon does not download your Steam Cloud save before starting (Steam still uploads
+  when you quit). If you also play elsewhere, start the game once with Steam's **Play** button first
+  so the newest cloud save is pulled down.
+
 ## Diagnose or uninstall
 
 ```sh
@@ -80,8 +119,8 @@ If more than one bottle contains Elden Ring, add `--bottle "/full/path/to/bottle
 ./scripts/uninstall.command
 ```
 
-Uninstall restores the original shortcuts and removes the launcher, `resolution.txt`
-and `steam_appid.txt`. The launcher log is `C:\EldenRingTools\elden-ring-ultrawide.log`
+Uninstall restores the original shortcuts and removes the launcher, `resolution.txt`,
+`steam_appid.txt`, me3 and the UI fixes. The launcher log is `C:\EldenRingTools\elden-ring-ultrawide.log`
 inside the bottle; a healthy launch looks like:
 
 ```text
@@ -90,14 +129,13 @@ screen 3840x1080: bars at 0x19EE74E, 1920x1080 entry -> 3840x1080, vignette off,
 
 ## Known limitations
 
-- **Loading screens show junk at the sides.** Loading screens, including the ones when the game
-  starts and when you quit, draw their artwork at 16:9 and never clear the rest of the screen, so the
-  side strips show a half-loaded, low-detail world (bare cliffs, flat water). It's annoying, but
-  harmless: it disappears as soon as the area loads, and gameplay and cutscenes are full width.
-  No patch for this exists yet; contributions welcome.
-- **Map and site-of-grace fade are 16:9.** The map is a 16:9 panel with your live game visible
-  on both sides, and the fade when resting or traveling only darkens the 16:9 centre. Cosmetic;
-  tracked with the loading screens in [#1](https://github.com/kidtangerine/elden-ring-ultrawide-crossover-neo-g9/issues/1).
+- **Without the optional UI fixes,** loading screens, the death transition, the map and the
+  site-of-grace fade are 16:9 with whatever is behind them visible at the sides. Install the
+  [UI fixes](#optional-full-screen-loading-screens-map-and-menus) to fill them.
+- **With the UI fixes (me3),** quitting the game can end in a crash *after* it has saved; progress
+  is not affected. me3 is still young on CrossOver.
+- **Exclusive Full Screen mode doesn't work** with the ultrawide patch under CrossOver (the image
+  shrinks and flickers) — use **Borderless Windowed**.
 - **Performance:** 3840×1080 is twice the pixels of 1080p. On an M5 Max it held 60 FPS
   (GPU ~7 ms/frame) at High; slower Macs may need lower settings.
 - **Game updates:** patches are located by pattern, so updates that only move code keep working.
@@ -141,6 +179,9 @@ The bundled `dist/EldenRingUltrawideLauncher.exe` checksum is in
 - [IgnazioDS/elden-ring-crossover-ultrawide](https://github.com/IgnazioDS/elden-ring-crossover-ultrawide) —
   the CrossOver launcher, installer, temporary-copy design and rollback tooling this edition is built on (MIT).
 - [gurrgur/er-patcher](https://github.com/gurrgur/er-patcher) — black-bar, vignette and animation-distance patches (MIT).
+- [Dziggy — Ultrawide UI Fixes](https://www.nexusmods.com/eldenring/mods/283) — the ultrawide loading screens,
+  map and menus (downloaded by the user from Nexus; not redistributed here).
+- [garyttierney/me3](https://github.com/garyttierney/me3) — the mod loader that loads them (MIT/Apache-2.0).
 - [uberhalit/EldenRingFpsUnlockAndMore](https://github.com/uberhalit/EldenRingFpsUnlockAndMore) —
   the custom-resolution table technique (MIT).
 

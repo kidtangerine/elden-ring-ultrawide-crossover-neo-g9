@@ -65,7 +65,7 @@ require_supported_game "$BOTTLE_PATH"
 ensure_game_closed "$BOTTLE_PATH"
 
 launcher_hash=$(shasum -a 256 "$ROOT/dist/EldenRingUltrawideLauncher.exe" | awk '{print $1}')
-expected_launcher_hash='49d115da32643881adc4087a97736f646dc966f60cf12d2295c020b89ca3ef95'
+expected_launcher_hash='02494d66711de7c88446101ff0f75916a95f05f7235309f7495be5fb3b67b02d'
 [ "$launcher_hash" = "$expected_launcher_hash" ] || fail 'Bundled launcher checksum mismatch; obtain a clean repository copy.'
 
 timestamp=$(date '+%Y%m%d-%H%M%S')
